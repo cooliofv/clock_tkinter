@@ -40,24 +40,25 @@ frame_main = t.Frame(master=window_main)
 frame_main.pack()
 #frame_main['padding'] = (30, 30, 30, 0)
 
-frame_menu_buttons = t.Frame(master=frame_main, bg=p.WINDOW_BACKGROUND)
+frame_menu_buttons = t.Frame(master=frame_main)
 frame_clock = t.Frame(master=frame_main,bg='black', padx=50, pady=50)
-frame_buttons = t.Frame(master=frame_main, padx=20, pady=20, bg=p.WINDOW_BACKGROUND) 
-frame_clock_time = t.Frame(master=frame_main, padx=20, pady=20, bg=p.WINDOW_BACKGROUND)
+frame_buttons = t.Frame(master=frame_main, padx=20, pady=20)
+frame_clock_time = t.Frame(master=frame_main, padx=20, pady=20)
 frame_timer_sel  = t.Frame(master=frame_main)
 frame_btn_bottom = t.Frame(master=frame_main)
 
-frame_menu_buttons.grid(row=0, column=0, columnspan=3)
-frame_clock.grid(row=1, column=0, columnspan=3)
-frame_buttons.grid(row=2, column=0, columnspan=3)
-frame_timer_sel.grid(row=3, column=0,columnspan=3)
-frame_clock_time.grid(row=4, column=0, columnspan=3)
+frame_menu_buttons.pack()
+frame_clock.pack()
+frame_buttons.pack()
+frame_timer_sel.pack()
+frame_clock_time.pack()
+
 #frame_btn_bottom.grid()
 
 btn_timer = t.Button(master=frame_menu_buttons, width=13, text='ТАЙМЕР', bg='lightblue', fg='white', font='Arial, 18', command=lambda:set_mode('timer'))
 btn_stopwatch = t.Button(master=frame_menu_buttons, width=13, text='СЕКУНДОМЕР', bg='lightblue', fg='white', font='Arial, 18', command=lambda: set_mode(mode='stopwatch'))
 btn_timer.grid(row=0, column=0)
-btn_stopwatch.grid(row=0, column=1, padx=10)
+btn_stopwatch.grid(row=0, column=2)
 
 
 label_hour  = t.Label(master=frame_clock, fg=p.COLOR_CLOCK, bg='black', font=(p.FONT_FAMILY, p.FONT_SIZE), text='00')
@@ -79,11 +80,23 @@ btn_start.pack(side='left')
 btn_pause = t.Button(master=frame_buttons, bg='orange', fg='white', padx=10, pady=10, text='ПАУЗА', command=lambda : timer_pause())
 btn_pause.pack(side='left')
 btn_stop  = t.Button(master=frame_buttons, bg='red', fg='white', padx=10, pady=10, text='СТОП', command=lambda : timer_stop())
-btn_stop.pack(side='right')
+btn_stop.pack(side='left')
 
-#cmbx_hour = ttk.Combobox(master=frame_timer_sel)
+frame_timer_sel_inner = t.Frame(master=frame_timer_sel)
+frame_timer_sel_inner.pack()
+cmbx_hour = ttk.Combobox(master=frame_timer_sel_inner)
+cmbx_min  = ttk.Combobox(master=frame_timer_sel_inner)
+cmbx_sec  = ttk.Combobox(master=frame_timer_sel_inner)
+lbl_cmbx_hour = ttk.Label(master=frame_timer_sel_inner, text='ЧАС')
+lbl_cmbx_min  = ttk.Label(master=frame_timer_sel_inner, text='МИНУТА')
+lbl_cmbx_sec  = ttk.Label(master=frame_timer_sel_inner, text='СЕКУНДА')
 
-#cmbx_hour.grid(row=0, column=0)
+cmbx_hour.grid(row=1, column=0)
+cmbx_min.grid(row=1, column=1)
+cmbx_sec.grid(row=1, column=2)
+lbl_cmbx_hour.grid(row=0, column=0)
+lbl_cmbx_min.grid(row=0, column=1)
+lbl_cmbx_sec.grid(row=0, column=2)
 
 btn_ext_font    = font.Font(family='Courier', size=20, weight='bold')
 btn_exit        = t.Button(
@@ -94,10 +107,12 @@ btn_exit        = t.Button(
     text='Выход',
     borderwidth=0,
     command=lambda : program_exit())
-btn_exit.pack(expand=True)
+btn_exit.pack(side=t.BOTTOM, fill=t.BOTH)
 
 label_clock = t.Label(master=frame_clock_time,fg=p.COLOR_CLOCK, bg='black', font=f'{p.FONT_FAMILY}, {22}')
 label_clock.pack()
+
+
 
 def set_mode(mode):
     global timer_mode
@@ -106,10 +121,12 @@ def set_mode(mode):
     if mode == 'stopwatch':
         btn_stopwatch.config(state=t.DISABLED)
         btn_timer.config(state=t.NORMAL)
+        frame_timer_sel_inner.forget()
     
     if mode == 'timer':
         btn_stopwatch.config(state=t.NORMAL)
         btn_timer.config(state=t.DISABLED)
+        frame_timer_sel_inner.pack()
        
 def change_label(lbl, time_unit, mill=False):
     if mill:
